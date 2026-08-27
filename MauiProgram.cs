@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace CafePos
 {
@@ -18,6 +18,12 @@ namespace CafePos
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            // Dependency Injection - Services
+
+            // Dependency Injection - ViewModels
+
+            // Dependency Injection - Views / Pages
 
             return builder.Build();
         }
