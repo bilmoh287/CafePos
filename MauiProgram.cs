@@ -1,3 +1,4 @@
+using CafePos.Data;
 using Microsoft.Extensions.Logging;
 
 namespace CafePos
@@ -18,6 +19,9 @@ namespace CafePos
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            // Dependency Injection - Data Context
+            builder.Services.AddDbContext<AppDbContext>();
 
             // Dependency Injection - Services
 
