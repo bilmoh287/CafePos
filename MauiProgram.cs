@@ -1,6 +1,8 @@
 using CafePos.Data;
 using CafePos.Services.Implementations;
 using CafePos.Services.Interfaces;
+using CafePos.ViewModels;
+using CafePos.Views;
 using Microsoft.Extensions.Logging;
 
 namespace CafePos
@@ -27,10 +29,13 @@ namespace CafePos
 
             // Dependency Injection - Services
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             // Dependency Injection - ViewModels
+            builder.Services.AddTransient<ProductsViewModel>();
 
             // Dependency Injection - Views / Pages
+            builder.Services.AddTransient<ProductsPage>();
 
             return builder.Build();
         }

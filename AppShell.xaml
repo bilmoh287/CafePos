@@ -3,12 +3,16 @@
     x:Class="CafePos.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CafePos"
+    xmlns:views="clr-namespace:CafePos.Views"
     Title="CafePos">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Title="Catalog" Icon="dotnet_bot.png">
+            <ShellContent
+                Title="Products"
+                ContentTemplate="{DataTemplate views:ProductsPage}"
+                Route="ProductsPage" />
+        </Tab>
+    </TabBar>
 
 </Shell>

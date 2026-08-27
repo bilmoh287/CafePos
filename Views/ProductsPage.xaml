@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:CafePos.Models"
+             xmlns:viewmodels="clr-namespace:CafePos.ViewModels"
+             xmlns:views="clr-namespace:CafePos.Views"
+             x:Class="CafePos.Views.ProductsPage"
+             x:DataType="viewmodels:ProductsViewModel"
+             x:Name="ThisPage"
+             Title="Product Catalog"
+             BackgroundColor="#F4F5F7">
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Top Header & Search Bar -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="12">
+            <Border Grid.Column="0"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1"
+                    Stroke="#D1D5DB"
+                    BackgroundColor="White"
+                    Padding="4,0">
+                <SearchBar Text="{Binding SearchQuery, Mode=TwoWay}"
+                           Placeholder="Search products by name or SKU..."
+                           HeightRequest="44"
+                           BackgroundColor="Transparent" />
+            </Border>
+            
+            <Button Grid.Column="1"
+                    Text="Refresh"
+                    Command="{Binding LoadProductsCommand}"
+                    BackgroundColor="#3B82F6"
+                    TextColor="White"
+                    CornerRadius="8"
+                    FontAttributes="Bold"
+                    HeightRequest="44" />
+        </Grid>
+
+        <!-- Category Filter Bar (Chips) -->
+        <ScrollView Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalScrollBarVisibility="Never">
+            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Categories}"
+                                   Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="x:String">
+                        <Button Text="{Binding .}"
+                                Command="{Binding BindingContext.SelectCategoryCommand, Source={x:Reference ThisPage}}"
+                                CommandParameter="{Binding .}"
+                                HeightRequest="36"
+                                Padding="16,0"
+                                CornerRadius="18"
+                                FontAttributes="Bold"
+                                FontSize="13"
+                                BackgroundColor="#E5E7EB"
+                                TextColor="#374151" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Product Grid Area -->
+        <Grid Grid.Row="2">
+
+            <!-- Loading State -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Color="#3B82F6"
+                               HeightRequest="48"
+                               WidthRequest="48" />
+
+            <!-- Empty State -->
+            <VerticalStackLayout IsVisible="{Binding IsEmpty}"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="8">
+                <Label Text="No Products Found"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#6B7280"
+                       HorizontalOptions="Center" />
+                <Label Text="Try searching with a different term or select another category."
+                       FontSize="14"
+                       TextColor="#9CA3AF"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Error State -->
+            <VerticalStackLayout IsVisible="{Binding HasError}"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 Spacing="8">
+                <Label Text="{Binding ErrorMessage}"
+                       FontSize="14"
+                       TextColor="#EF4444"
+                       HorizontalOptions="Center" />
+                <Button Text="Retry"
+                        Command="{Binding LoadProductsCommand}"
+                        BackgroundColor="#EF4444"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Product Collection Grid -->
+            <CollectionView ItemsSource="{Binding Products}"
+                            IsVisible="{Binding IsNotLoading}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="3"
+                                     HorizontalItemSpacing="12"
+                                     VerticalItemSpacing="12" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Product">
+                        <Border StrokeShape="RoundRectangle 12"
+                                StrokeThickness="1"
+                                Stroke="#E5E7EB"
+                                BackgroundColor="White"
+                                Padding="16">
+                            <Grid RowDefinitions="Auto,Auto,*,Auto"
+                                  RowSpacing="6">
+
+                                <!-- Category Badge -->
+                                <Border Grid.Row="0"
+                                        StrokeShape="RoundRectangle 6"
+                                        BackgroundColor="#EFF6FF"
+                                        StrokeThickness="0"
+                                        Padding="6,2"
+                                        HorizontalOptions="Start">
+                                    <Label Text="{Binding Category}"
+                                           FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="#2563EB" />
+                                </Border>
+
+                                <!-- Product Name -->
+                                <Label Grid.Row="1"
+                                       Text="{Binding Name}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#1F2937"
+                                       MaxLines="2"
+                                       LineBreakMode="TailTruncation" />
+
+                                <!-- SKU & Price -->
+                                <HorizontalStackLayout Grid.Row="2"
+                                                       Spacing="8"
+                                                       VerticalOptions="Center">
+                                    <Label Text="{Binding SKU}"
+                                           FontSize="12"
+                                           TextColor="#9CA3AF"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="#059669"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+
+                                <!-- Add to Cart Touch Button -->
+                                <Button Grid.Row="3"
+                                        Text="+ Add to Order"
+                                        Command="{Binding BindingContext.AddToCartCommand, Source={x:Reference ThisPage}}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#10B981"
+                                        TextColor="White"
+                                        CornerRadius="8"
+                                        FontAttributes="Bold"
+                                        HeightRequest="40"
+                                        Margin="0,8,0,0" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>
