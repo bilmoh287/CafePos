@@ -30,9 +30,11 @@ namespace CafePos
             // Dependency Injection - Services
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddSingleton<ICartService, CartService>();
 
             // Dependency Injection - ViewModels
             builder.Services.AddTransient<ProductsViewModel>();
+            builder.Services.AddTransient<CartViewModel>();
 
             // Dependency Injection - Views / Pages
             builder.Services.AddTransient<ProductsPage>();

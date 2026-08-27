@@ -9,6 +9,7 @@ namespace CafePos.ViewModels;
 public partial class ProductsViewModel : ObservableObject
 {
     private readonly IProductService _productService;
+    private readonly ICartService _cartService;
     private CancellationTokenSource? _searchCts;
 
     public ObservableCollection<Product> Products { get; } = new();
@@ -35,9 +36,10 @@ public partial class ProductsViewModel : ObservableObject
     [ObservableProperty]
     public partial string ErrorMessage { get; set; } = string.Empty;
 
-    public ProductsViewModel(IProductService productService)
+    public ProductsViewModel(IProductService productService, ICartService cartService)
     {
         _productService = productService;
+        _cartService = cartService;
     }
 
     partial void OnSearchQueryChanged(string value)
@@ -139,8 +141,7 @@ public partial class ProductsViewModel : ObservableObject
     [RelayCommand]
     public void AddToCart(Product product)
     {
-        // Command signature ready for ICartService integration in Milestone 6.
-        // Intentionally no fake cart state or false popups created prior to Milestone 6.
         if (product == null) return;
+        _cartService.AddItem(product, 1);
     }
 }
