@@ -1,4 +1,6 @@
 using CafePos.Data;
+using CafePos.Services.Implementations;
+using CafePos.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace CafePos
@@ -24,6 +26,7 @@ namespace CafePos
             builder.Services.AddDbContext<AppDbContext>();
 
             // Dependency Injection - Services
+            builder.Services.AddTransient<IDbInitializer, DbInitializer>();
 
             // Dependency Injection - ViewModels
 
