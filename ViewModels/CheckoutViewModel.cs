@@ -14,6 +14,7 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
     public partial PaymentMethod SelectedPaymentMethod { get; set; } = PaymentMethod.Cash;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCanPay))]
     public partial bool IsProcessing { get; set; }
 
     [ObservableProperty]
@@ -27,6 +28,8 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
     public decimal GrandTotal => _cartService.GrandTotal;
     public int TotalItemCount => _cartService.TotalItemCount;
     public IReadOnlyList<CartItem> Items => _cartService.Items;
+
+    public bool IsCanPay => TotalItemCount > 0 && !IsProcessing;
 
     public event EventHandler<Order>? OrderCompleted;
 
@@ -50,6 +53,7 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
         OnPropertyChanged(nameof(GrandTotal));
         OnPropertyChanged(nameof(TotalItemCount));
         OnPropertyChanged(nameof(Items));
+        OnPropertyChanged(nameof(IsCanPay));
     }
 
     [RelayCommand]
@@ -61,10 +65,10 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
     [RelayCommand]
     public async Task ProcessCheckoutAsync()
     {
-        if (_cartService.Items.Count == 0)
+        if (_cartService.Items.Count == 0 || TotalItemCount == 0)
         {
             HasError = true;
-            ErrorMessage = "Cart is empty. Add products before checking out.";
+            ErrorMessage = "Cart is empty. Please add items before completing payment.";
             return;
         }
 
@@ -79,7 +83,7 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
             // 1. Create & Persist Order in EF Core Database
             var completedOrder = await _orderService.CreateOrderAsync(_cartService.Items, SelectedPaymentMethod);
 
-            // 2. Clear cart ONLY AFTER successful database save
+            // 2. Clear cart ONLY AFTER successful database persistence confirmation
             _cartService.Clear();
 
             // 3. Notify subscribers of successful completed order
@@ -88,7 +92,7 @@ public partial class CheckoutViewModel : ObservableObject, IDisposable
         catch (Exception ex)
         {
             HasError = true;
-            ErrorMessage = $"Failed to process order: {ex.Message}";
+            ErrorMessage = $"Unable to complete transaction: {ex.Message}";
         }
         finally
         {
