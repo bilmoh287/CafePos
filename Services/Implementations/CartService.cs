@@ -7,14 +7,19 @@ namespace CafePos.Services.Implementations;
 public class CartService : ICartService
 {
     private readonly List<CartItem> _items = new();
+    private decimal _discountPercentage = 0m;
 
     public IReadOnlyList<CartItem> Items => _items.AsReadOnly();
 
     public decimal Subtotal => _items.Sum(i => i.TotalPrice);
 
-    public decimal Tax => TaxCalculator.CalculateTax(Subtotal);
+    public decimal DiscountAmount => Math.Round(Subtotal * (_discountPercentage / 100m), 2, MidpointRounding.AwayFromZero);
 
-    public decimal GrandTotal => TaxCalculator.CalculateGrandTotal(Subtotal, Tax);
+    public decimal TaxableSubtotal => Math.Max(0m, Subtotal - DiscountAmount);
+
+    public decimal Tax => TaxCalculator.CalculateTax(TaxableSubtotal);
+
+    public decimal GrandTotal => TaxCalculator.CalculateGrandTotal(TaxableSubtotal, Tax);
 
     public int TotalItemCount => _items.Sum(i => i.Quantity);
 
@@ -65,8 +70,15 @@ public class CartService : ICartService
         }
     }
 
+    public void ApplyDiscount(decimal percentage)
+    {
+        _discountPercentage = Math.Clamp(percentage, 0m, 100m);
+        NotifyCartChanged();
+    }
+
     public void Clear()
     {
+        _discountPercentage = 0m;
         if (_items.Count > 0)
         {
             _items.Clear();

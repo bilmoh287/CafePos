@@ -22,7 +22,12 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "cafepos.db3");
+            string dirPath = FileSystem.AppDataDirectory;
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            string dbPath = Path.Combine(dirPath, "cafepos.db3");
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
     }
