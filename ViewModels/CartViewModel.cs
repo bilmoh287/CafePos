@@ -27,6 +27,9 @@ public partial class CartViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial bool IsEmpty { get; set; } = true;
 
+    [ObservableProperty]
+    public partial bool HasItems { get; set; }
+
     public CartViewModel(ICartService cartService)
     {
         _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
@@ -67,6 +70,7 @@ public partial class CartViewModel : ObservableObject, IDisposable
         GrandTotal = _cartService.GrandTotal;
         TotalItemCount = _cartService.TotalItemCount;
         IsEmpty = Items.Count == 0;
+        HasItems = Items.Count > 0;
     }
 
     [RelayCommand]

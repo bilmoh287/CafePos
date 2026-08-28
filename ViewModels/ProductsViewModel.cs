@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CafePos.ViewModels;
 
-public partial class ProductsViewModel : ObservableObject
+public partial class ProductsViewModel : ObservableObject, IDisposable
 {
     private readonly IProductService _productService;
     private readonly ICartService _cartService;
@@ -36,10 +36,47 @@ public partial class ProductsViewModel : ObservableObject
     [ObservableProperty]
     public partial string ErrorMessage { get; set; } = string.Empty;
 
+    [ObservableProperty]
+    public partial int CartItemCount { get; set; }
+
+    [ObservableProperty]
+    public partial decimal CartGrandTotal { get; set; }
+
+    [ObservableProperty]
+    public partial bool HasCartItems { get; set; }
+
     public ProductsViewModel(IProductService productService, ICartService cartService)
     {
         _productService = productService;
         _cartService = cartService;
+        _cartService.CartChanged += OnCartChanged;
+        RefreshCartSummary();
+    }
+
+    private void OnCartChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            if (MainThread.IsMainThread)
+            {
+                RefreshCartSummary();
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(RefreshCartSummary);
+            }
+        }
+        catch
+        {
+            RefreshCartSummary();
+        }
+    }
+
+    private void RefreshCartSummary()
+    {
+        CartItemCount = _cartService.TotalItemCount;
+        CartGrandTotal = _cartService.GrandTotal;
+        HasCartItems = CartItemCount > 0;
     }
 
     partial void OnSearchQueryChanged(string value)
@@ -143,5 +180,16 @@ public partial class ProductsViewModel : ObservableObject
     {
         if (product == null) return;
         _cartService.AddItem(product, 1);
+    }
+
+    [RelayCommand]
+    public async Task OpenCartAsync()
+    {
+        await Shell.Current.GoToAsync("//CartPage");
+    }
+
+    public void Dispose()
+    {
+        _cartService.CartChanged -= OnCartChanged;
     }
 }

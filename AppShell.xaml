@@ -13,6 +13,12 @@
                 ContentTemplate="{DataTemplate views:ProductsPage}"
                 Route="ProductsPage" />
         </Tab>
+        <Tab Title="Current Order" Icon="dotnet_bot.png">
+            <ShellContent
+                Title="Cart"
+                ContentTemplate="{DataTemplate views:CartPage}"
+                Route="CartPage" />
+        </Tab>
     </TabBar>
 
 </Shell>

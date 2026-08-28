@@ -38,6 +38,7 @@ namespace CafePos
 
             // Dependency Injection - Views / Pages
             builder.Services.AddTransient<ProductsPage>();
+            builder.Services.AddTransient<CartPage>();
 
             return builder.Build();
         }

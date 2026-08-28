@@ -16,8 +16,8 @@
 
         <!-- Top Header & Search Bar -->
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto"
-              ColumnSpacing="12">
+              ColumnDefinitions="*,Auto,Auto"
+              ColumnSpacing="10">
             <Border Grid.Column="0"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1"
@@ -26,11 +26,33 @@
                     Padding="4,0">
                 <SearchBar Text="{Binding SearchQuery, Mode=TwoWay}"
                            Placeholder="Search products by name or SKU..."
+                           TextColor="#1F2937"
+                           PlaceholderColor="#9CA3AF"
                            HeightRequest="44"
                            BackgroundColor="Transparent" />
             </Border>
+
+            <!-- Live Cart Item Count & Total Badge (Clickable) -->
+            <Border Grid.Column="1"
+                    StrokeShape="RoundRectangle 8"
+                    BackgroundColor="#10B981"
+                    StrokeThickness="0"
+                    Padding="12,0"
+                    HeightRequest="44"
+                    IsVisible="{Binding HasCartItems}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCartCommand}" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                    <Label Text="🛒 Cart:" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center" />
+                    <Label Text="{Binding CartItemCount}" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center" />
+                    <Label Text="items" TextColor="White" FontSize="12" VerticalOptions="Center" />
+                    <Label Text="•" TextColor="White" FontSize="12" VerticalOptions="Center" />
+                    <Label Text="{Binding CartGrandTotal, StringFormat='${0:F2}'}" TextColor="White" FontAttributes="Bold" FontSize="14" VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
             
-            <Button Grid.Column="1"
+            <Button Grid.Column="2"
                     Text="Refresh"
                     Command="{Binding LoadProductsCommand}"
                     BackgroundColor="#3B82F6"
