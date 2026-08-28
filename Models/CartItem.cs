@@ -1,9 +1,14 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace CafePos.Models;
 
-public class CartItem
+public partial class CartItem : ObservableObject
 {
     public Product Product { get; }
-    public int Quantity { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TotalPrice))]
+    public partial int Quantity { get; set; }
 
     public decimal UnitPrice => Product.Price;
     public decimal TotalPrice => UnitPrice * Quantity;

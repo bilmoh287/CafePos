@@ -57,11 +57,12 @@ public class OrderService : IOrderService
 
     public async Task<List<Order>> GetOrdersAsync()
     {
-        return await _dbContext.Orders
+        var orders = await _dbContext.Orders
             .Include(o => o.Items)
-            .OrderByDescending(o => o.OrderDate)
             .AsNoTracking()
             .ToListAsync();
+
+        return orders.OrderByDescending(o => o.OrderDate).ThenByDescending(o => o.Id).ToList();
     }
 
     public async Task<Order?> GetOrderByIdAsync(int orderId)

@@ -68,7 +68,7 @@
 
         <!-- Active Order Content Grid (Line Items + Summary Card) -->
         <Grid Grid.Row="1"
-              ColumnDefinitions="*,340"
+              ColumnDefinitions="*,320"
               ColumnSpacing="16"
               IsVisible="{Binding HasItems}">
 
@@ -87,7 +87,7 @@
                                 BackgroundColor="White"
                                 Padding="14">
                             <Grid ColumnDefinitions="*,Auto,Auto,Auto"
-                                  ColumnSpacing="16"
+                                  ColumnSpacing="12"
                                   VerticalOptions="Center">
 
                                 <!-- Product Info -->
@@ -97,17 +97,17 @@
                                     <Label Text="{Binding Product.Name}"
                                            FontSize="15"
                                            FontAttributes="Bold"
-                                           TextColor="#1F2937" />
-                                    <HorizontalStackLayout Spacing="8">
-                                        <Label Text="{Binding Product.Category}"
-                                               FontSize="12"
-                                               TextColor="#2563EB"
-                                               FontAttributes="Bold" />
-                                        <Label Text="•" TextColor="#9CA3AF" FontSize="12" />
-                                        <Label Text="{Binding UnitPrice, StringFormat='${0:F2} each'}"
-                                               FontSize="12"
-                                               TextColor="#6B7280" />
-                                    </HorizontalStackLayout>
+                                           TextColor="#1F2937"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label FontSize="12" LineBreakMode="TailTruncation">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Product.Category}" TextColor="#2563EB" FontAttributes="Bold" />
+                                                <Span Text=" • " TextColor="#9CA3AF" />
+                                                <Span Text="{Binding UnitPrice, StringFormat='${0:F2} each'}" TextColor="#6B7280" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
                                 </VerticalStackLayout>
 
                                 <!-- Quantity Adjustment Controls -->
@@ -126,15 +126,15 @@
                                                 TextColor="#374151"
                                                 FontAttributes="Bold"
                                                 FontSize="16"
-                                                WidthRequest="36"
-                                                HeightRequest="36"
+                                                WidthRequest="32"
+                                                HeightRequest="32"
                                                 Padding="0" />
                                         
                                         <Label Text="{Binding Quantity}"
                                                FontSize="15"
                                                FontAttributes="Bold"
                                                TextColor="#1F2937"
-                                               WidthRequest="36"
+                                               WidthRequest="32"
                                                HorizontalTextAlignment="Center"
                                                VerticalTextAlignment="Center" />
 
@@ -145,8 +145,8 @@
                                                 TextColor="#374151"
                                                 FontAttributes="Bold"
                                                 FontSize="16"
-                                                WidthRequest="36"
-                                                HeightRequest="36"
+                                                WidthRequest="32"
+                                                HeightRequest="32"
                                                 Padding="0" />
                                     </HorizontalStackLayout>
                                 </Border>
@@ -154,10 +154,10 @@
                                 <!-- Total Price for Line Item -->
                                 <Label Grid.Column="2"
                                        Text="{Binding TotalPrice, StringFormat='${0:F2}'}"
-                                       FontSize="16"
+                                       FontSize="15"
                                        FontAttributes="Bold"
                                        TextColor="#059669"
-                                       WidthRequest="80"
+                                       WidthRequest="70"
                                        HorizontalTextAlignment="End"
                                        VerticalOptions="Center" />
 
@@ -170,9 +170,9 @@
                                         TextColor="#EF4444"
                                         CornerRadius="16"
                                         FontAttributes="Bold"
-                                        FontSize="14"
-                                        WidthRequest="32"
-                                        HeightRequest="32"
+                                        FontSize="13"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
                                         Padding="0"
                                         VerticalOptions="Center" />
                             </Grid>

@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace CafePos.ViewModels;
 
-public partial class CheckoutViewModel : ObservableObject
+public partial class CheckoutViewModel : ObservableObject, IDisposable
 {
     private readonly ICartService _cartService;
     private readonly IOrderService _orderService;
@@ -34,6 +34,22 @@ public partial class CheckoutViewModel : ObservableObject
     {
         _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
         _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        
+        _cartService.CartChanged += OnCartChanged;
+    }
+
+    private void OnCartChanged(object? sender, EventArgs e)
+    {
+        RefreshState();
+    }
+
+    public void RefreshState()
+    {
+        OnPropertyChanged(nameof(Subtotal));
+        OnPropertyChanged(nameof(Tax));
+        OnPropertyChanged(nameof(GrandTotal));
+        OnPropertyChanged(nameof(TotalItemCount));
+        OnPropertyChanged(nameof(Items));
     }
 
     [RelayCommand]
@@ -78,5 +94,10 @@ public partial class CheckoutViewModel : ObservableObject
         {
             IsProcessing = false;
         }
+    }
+
+    public void Dispose()
+    {
+        _cartService.CartChanged -= OnCartChanged;
     }
 }

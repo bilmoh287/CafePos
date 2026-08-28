@@ -16,6 +16,12 @@ public partial class CheckoutModal : ContentPage
         _viewModel.OrderCompleted += OnOrderCompleted;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.RefreshState();
+    }
+
     private async void OnOrderCompleted(object? sender, Order order)
     {
         await DisplayAlertAsync(
@@ -30,7 +36,7 @@ public partial class CheckoutModal : ContentPage
 
         await Navigation.PopModalAsync();
     }
- 
+
     private async void OnCancelClicked(object? sender, EventArgs e)
     {
         await Navigation.PopModalAsync();

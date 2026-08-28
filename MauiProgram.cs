@@ -37,11 +37,13 @@ namespace CafePos
             builder.Services.AddTransient<ProductsViewModel>();
             builder.Services.AddTransient<CartViewModel>();
             builder.Services.AddTransient<CheckoutViewModel>();
+            builder.Services.AddTransient<OrderHistoryViewModel>();
 
             // Dependency Injection - Views / Pages / Modals
             builder.Services.AddTransient<ProductsPage>();
             builder.Services.AddTransient<CartPage>();
             builder.Services.AddTransient<CheckoutModal>();
+            builder.Services.AddTransient<OrderHistoryPage>();
 
             return builder.Build();
         }
