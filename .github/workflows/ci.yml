@@ -1,0 +1,40 @@
+name: CafePos CI Pipeline
+
+# Trigger workflow on pushes and pull requests to main or master branch
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    # Use Windows runner because Windows is our primary tested MAUI target
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up .NET 10 SDK environment
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # Step 3: Install .NET MAUI Workload required for multi-target compilation
+      - name: Install MAUI Workload
+        run: dotnet workload install maui
+
+      # Step 4: Restore NuGet packages for the solution
+      - name: Restore Solution Dependencies
+        run: dotnet restore CafePos.sln
+
+      # Step 5: Build the .NET MAUI project explicitly targeting Windows
+      - name: Build MAUI Project (Windows Target)
+        run: dotnet build CafePos.csproj -c Release -f net10.0-windows10.0.19041.0
+
+      # Step 6: Execute the xUnit test suite directly against the test project
+      - name: Run Unit Tests
+        run: dotnet test tests/CafePos.Tests/CafePos.Tests.csproj -c Release --verbosity normal
