@@ -31,14 +31,17 @@ namespace CafePos
             builder.Services.AddTransient<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddSingleton<ICartService, CartService>();
+            builder.Services.AddTransient<IOrderService, OrderService>();
 
             // Dependency Injection - ViewModels
             builder.Services.AddTransient<ProductsViewModel>();
             builder.Services.AddTransient<CartViewModel>();
+            builder.Services.AddTransient<CheckoutViewModel>();
 
-            // Dependency Injection - Views / Pages
+            // Dependency Injection - Views / Pages / Modals
             builder.Services.AddTransient<ProductsPage>();
             builder.Services.AddTransient<CartPage>();
+            builder.Services.AddTransient<CheckoutModal>();
 
             return builder.Build();
         }

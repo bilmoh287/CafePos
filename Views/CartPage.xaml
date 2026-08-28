@@ -217,8 +217,9 @@
                         <Label Grid.Column="1" Text="{Binding GrandTotal, StringFormat='${0:F2}'}" FontSize="22" FontAttributes="Bold" TextColor="#059669" VerticalOptions="Center" />
                     </Grid>
 
-                    <!-- Checkout Button Placeholder -->
+                    <!-- Checkout Button -->
                     <Button Text="Proceed to Payment"
+                            Clicked="OnProceedToPaymentClicked"
                             BackgroundColor="#10B981"
                             TextColor="White"
                             CornerRadius="8"
