@@ -14,10 +14,12 @@
           Padding="16"
           RowSpacing="12">
 
-        <!-- Top Header & Search Bar -->
+        <!-- Top Header & Search / Scanner Bar -->
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto,Auto"
+              ColumnDefinitions="*,Auto,Auto,Auto,Auto"
               ColumnSpacing="10">
+            
+            <!-- Product / SKU Search Bar -->
             <Border Grid.Column="0"
                     StrokeShape="RoundRectangle 8"
                     StrokeThickness="1"
@@ -25,15 +27,41 @@
                     BackgroundColor="White"
                     Padding="4,0">
                 <SearchBar Text="{Binding SearchQuery, Mode=TwoWay}"
-                           Placeholder="Search products by name or SKU..."
+                           Placeholder="Search catalog..."
                            TextColor="#1F2937"
                            PlaceholderColor="#9CA3AF"
                            HeightRequest="44"
                            BackgroundColor="Transparent" />
             </Border>
 
-            <!-- Live Cart Item Count & Total Badge (Clickable) -->
+            <!-- Barcode SKU Simulation Entry Input -->
             <Border Grid.Column="1"
+                    StrokeShape="RoundRectangle 8"
+                    StrokeThickness="1"
+                    Stroke="#D1D5DB"
+                    BackgroundColor="White"
+                    WidthRequest="110"
+                    Padding="8,0">
+                <Entry Text="{Binding SimulatedSku, Mode=TwoWay}"
+                       Placeholder="e.g. SKU-001"
+                       TextColor="#1F2937"
+                       FontSize="13"
+                       HeightRequest="44"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- Barcode Scanner Simulation Button -->
+            <Button Grid.Column="2"
+                    Text="📷 Scan SKU"
+                    Command="{Binding ScanBarcodeCommand}"
+                    BackgroundColor="#8B5CF6"
+                    TextColor="White"
+                    CornerRadius="8"
+                    FontAttributes="Bold"
+                    HeightRequest="44" />
+
+            <!-- Live Cart Item Count & Total Badge (Clickable) -->
+            <Border Grid.Column="3"
                     StrokeShape="RoundRectangle 8"
                     BackgroundColor="#10B981"
                     StrokeThickness="0"
@@ -52,7 +80,7 @@
                 </HorizontalStackLayout>
             </Border>
             
-            <Button Grid.Column="2"
+            <Button Grid.Column="4"
                     Text="Refresh"
                     Command="{Binding LoadProductsCommand}"
                     BackgroundColor="#3B82F6"

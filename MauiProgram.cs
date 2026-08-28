@@ -32,6 +32,7 @@ namespace CafePos
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddSingleton<ICartService, CartService>();
             builder.Services.AddTransient<IOrderService, OrderService>();
+            builder.Services.AddSingleton<IBarcodeScannerService, MockBarcodeScannerService>();
 
             // Dependency Injection - ViewModels
             builder.Services.AddTransient<ProductsViewModel>();

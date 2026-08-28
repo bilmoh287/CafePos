@@ -10,6 +10,7 @@ public partial class ProductsViewModel : ObservableObject, IDisposable
 {
     private readonly IProductService _productService;
     private readonly ICartService _cartService;
+    private readonly IBarcodeScannerService _scannerService;
     private CancellationTokenSource? _searchCts;
 
     public ObservableCollection<Product> Products { get; } = new();
@@ -45,10 +46,21 @@ public partial class ProductsViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial bool HasCartItems { get; set; }
 
-    public ProductsViewModel(IProductService productService, ICartService cartService)
+    [ObservableProperty]
+    public partial string StatusMessage { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string SimulatedSku { get; set; } = "SKU-001";
+
+    public ProductsViewModel(
+        IProductService productService,
+        ICartService cartService,
+        IBarcodeScannerService scannerService)
     {
-        _productService = productService;
-        _cartService = cartService;
+        _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+        _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
+        _scannerService = scannerService ?? throw new ArgumentNullException(nameof(scannerService));
+
         _cartService.CartChanged += OnCartChanged;
         RefreshCartSummary();
     }
@@ -180,6 +192,38 @@ public partial class ProductsViewModel : ObservableObject, IDisposable
     {
         if (product == null) return;
         _cartService.AddItem(product, 1);
+        StatusMessage = $"Added {product.Name} to cart";
+    }
+
+    [RelayCommand]
+    public async Task ScanBarcodeAsync()
+    {
+        try
+        {
+            HasError = false;
+            ErrorMessage = string.Empty;
+
+            string scannedSku = await _scannerService.ScanBarcodeAsync(SimulatedSku);
+            if (string.IsNullOrWhiteSpace(scannedSku)) return;
+
+            var matches = await _productService.GetProductsAsync(scannedSku);
+            var scannedProduct = matches.FirstOrDefault(p => string.Equals(p.SKU, scannedSku, StringComparison.OrdinalIgnoreCase));
+
+            if (scannedProduct != null)
+            {
+                _cartService.AddItem(scannedProduct, 1);
+                StatusMessage = $"📷 Scanned {scannedProduct.Name} ({scannedSku})";
+            }
+            else
+            {
+                StatusMessage = $"⚠️ Product with SKU '{scannedSku}' not found.";
+            }
+        }
+        catch (Exception ex)
+        {
+            HasError = true;
+            ErrorMessage = $"Barcode scan failed: {ex.Message}";
+        }
     }
 
     [RelayCommand]
